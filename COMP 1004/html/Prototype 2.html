@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password generator and Anti-Malware Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #8EC6F0;
+        }
+
+        #topBar {
+            background-color: #2574E1;
+            padding: 10px;
+            text-align: center;
+            color: white;
+        }
+
+
+
+        button {
+            padding: 20px;
+            padding-left: 21px;
+            padding-right: 21px;
+            background-color: #2574E1;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 20px;
+            display: block;
+            width: 200px;
+            margin: 0 auto;
+        }
+
+
+
+
+        #Page_Intro {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        #Sign_Up_Form {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        #generate_button {
+            margin-top: 20px;
+        }
+
+        #Page_Intro_Settings {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        #link_database_button {
+            margin-top: 40px;
+        }
+
+        input {
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+
+        #showPasswordIcon {
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            position: absolute;
+            transform: translateX(-50%);
+            transform: translateX(+50%);
+        }
+
+        #Anti_Malware_Info h1 {
+            position: absolute;
+            width: 100vw;
+            height: auto;
+            left: 20px;
+        }
+
+        #paragraph {
+            position: absolute;
+            top: 150px;
+            width: calc(60vw - 40px);
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        #paragraph2 {
+            position: absolute;
+            top: 600px;
+            width: calc(60vw - 40px);
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        #Anti_Malware_Info img {
+            position: absolute;
+            width: calc(40vw - 40px);
+            max-height: 50vh;
+            margin-left: 20px;
+            margin-right: 20px;
+            top: 200px;
+            right: 0;
+        }
+
+        #download_database_button {
+            position: absolute;
+            bottom: 20vh;
+            right: 20vw;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="topBar">
+        <h2>Data Protection Services</h2>
+    </div>
+
+    <div id="Page_Intro">
+        <form id="Page_Intro_Settings">
+            <h2>Do you have an account? If yes, please sign in.</h2>
+        </form>
+
+        <input type="text" id="registerUsername" placeholder="Username" required>
+        <input type="password" id="registerPassword" placeholder="Password" required>
+
+        <div id="buttonContainer">
+            <button id="sign_in_button">Sign In</button>
+            <h2>If you don't have an account, please sign up below:</h2>
+            <br><button id="sign_up_button">Sign Up</button>
+            <button id="link_database_button">Link Database</button>
+        </div>
+    </div>
+
+    <div id="Sign_Up_Form">
+        <form id="signupform">
+            <h2>Sign Up</h2>
+            <input type="text" id="sign_up_username" placeholder="Username" required>
+            <br>
+            <input type="password" id="sign_up_password" placeholder="Password" required>
+            <img src="./passwordvisible.png" alt="Show Password" id="showPasswordIcon">
+        </form>
+        <button type="button" id="sign_up_form_button">Sign Up</button>
+        <button type="button" id="generate_button">Generate</button>
+    </div>
+
+    
+    <div id="Anti_Malware_Info" style="display: none;">
+        <h1>Why is Anti-Malware Important?</h1>
+        <p id="paragraph">With cyber attackers continuously finding new ways to infiltrate networks to get ahold of not just business information, but your information too, it is more important than ever to have anti-malware software in place. There are multiple different types of malware which can harm your data, and your device. Worms, Adware, Trojan, Ransomware etc. You may have heard of some of these before. Worms will duplicate from device to device. Adware will automatically.</p>
+        <img src="./cyberpicture.jpg" alt="Cyber Picture">
+        <p id="paragraph2">Blah blah blah</p>
+        <button id="download_database_button">Update Database</button>
+    </div>
+
+    <script>
+
+        
+        let jsonData = { users: [] }; 
+
+        document.getElementById('sign_up_button').addEventListener('click', function () {
+            toggleForms('Page_Intro', 'Sign_Up_Form');
+        });
+
+        document.getElementById('sign_up_form_button').addEventListener('click', function () {
+            const username = document.getElementById('sign_up_username').value;
+            const password = document.getElementById('sign_up_password').value;
+
+            
+            if (username.trim() === '' || password.trim() === '') {
+                alert('Please enter a username and password.');
+                return;
+            }
+
+            
+            if (password.length < 12 || !hasEnoughSpecialCharacters(password)) {
+                alert('Please enter a password with at least 12 characters and at least 2 special characters.');
+                return;
+            }
+
+            
+            const userData = {
+                username: username,
+                password: password
+            };
+
+            
+            jsonData.users.push(userData); 
+
+            
+            toggleForms('Sign_Up_Form', 'Anti_Malware_Info');
+        });
+
+
+        
+        function updateLinkedDatabase() {
+            
+            const jsonString = JSON.stringify(jsonData);            
+            console.log('Updated linked database:', jsonString);
+            alert('Linked database updated successfully!');
+        }
+
+        document.getElementById('sign_in_button').addEventListener('click', function () {
+            
+            if (!jsonData || !jsonData.users) {
+                alert('No user data found. Please upload a JSON file or sign up.');
+                return;
+            }
+
+            
+            const enteredUsername = document.getElementById('registerUsername').value;
+            const enteredPassword = document.getElementById('registerPassword').value;
+
+            
+            const user = jsonData.users.find(user => user.username === enteredUsername && user.password === enteredPassword);
+            if (user) {
+                
+                toggleForms('Page_Intro', 'Anti_Malware_Info');
+            } else {
+                
+                alert('Incorrect username or password.');
+            }
+        });
+
+        
+        function hasEnoughSpecialCharacters(password) {
+            const specialCharacters = /[!@#$%^&*()-_+=<>?]/g; 
+            const specialCount = (password.match(specialCharacters) || []).length; 
+            return specialCount >= 2; 
+        }
+
+        document.getElementById('sign_in_button').addEventListener('click', function () {
+            
+            if (!jsonData || !jsonData.users) {
+                alert('No user data found. Please upload a JSON file.');
+                return;
+            }
+
+            
+            const enteredUsername = document.getElementById('registerUsername').value;
+            const enteredPassword = document.getElementById('registerPassword').value;
+
+            
+            const user = jsonData.users.find(user => user.username === enteredUsername && user.password === enteredPassword);
+            if (user) {
+                
+                toggleForms('Page_Intro', 'Anti_Malware_Info');
+            } else {
+                
+                alert('Incorrect username or password.');
+            }
+        });
+
+        function toggleForms(hideFormId, showFormId) {
+            const hideForm = document.getElementById(hideFormId);
+            const showForm = document.getElementById(showFormId);
+
+            hideForm.style.display = 'none';
+            showForm.style.display = 'flex';
+        }
+    </script>
+
+    <script>
+        
+        document.getElementById('link_database_button').addEventListener('click', function () {
+            
+            var input = document.createElement('input');
+            input.type = 'file';
+
+            
+            input.onchange = function (event) {
+                var file = event.target.files[0];
+                if (!file) return;
+
+                
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var contents = e.target.result;
+                    
+                    processUploadedFile(contents);
+                };
+                reader.readAsText(file);
+            };
+
+            
+            input.click();
+        });
+
+        
+        function processUploadedFile(contents) {
+            try {
+                
+                jsonData = JSON.parse(contents);
+                
+                console.log('Uploaded JSON data:', jsonData);
+                alert('JSON file uploaded successfully!');
+            } catch (error) {
+                console.error('Error processing uploaded file:', error);
+                alert('Error processing uploaded file!');
+            }
+        }
+
+        document.getElementById('download_database_button').addEventListener('click', function () {
+            
+            const jsonBlob = new Blob([JSON.stringify(jsonData)], { type: 'application/json' });
+
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(jsonBlob);
+            link.download = 'users.json';
+
+            
+            document.body.appendChild(link);
+            link.click();
+
+            
+            document.body.removeChild(link);
+        });
+
+    </script>
+
+
+    <script>
+        
+        document.getElementById('generate_button').addEventListener('click', function () {
+            
+            const password = generatePassword();
+            
+            document.getElementById('sign_up_password').value = password;
+        });
+
+        
+        function generatePassword() {
+            const length = 12; 
+            const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_+=<>?"; 
+
+            let password = "";
+            
+            for (let i = 0; i < length; i++) {
+                password += charset.charAt(Math.floor(Math.random() * charset.length));
+            }
+
+            
+            let specialCount = 0;
+            for (let char of password) {
+                if (!(/[a-zA-Z0-9]/).test(char)) {
+                    specialCount++;
+                }
+            }
+
+            if (specialCount < 2) {
+                
+                let indexes = [];
+                while (indexes.length < 2 - specialCount) {
+                    let index = Math.floor(Math.random() * length);
+                    if (indexes.indexOf(index) === -1) {
+                        indexes.push(index);
+                    }
+                }
+
+                
+                for (let index of indexes) {
+                    password = password.substring(0, index) + charset.charAt(Math.floor(Math.random() * 20) + 52) + password.substring(index + 1);
+                }
+            }
+
+            return password;
+        }
+
+        
+        document.getElementById('showPasswordIcon').addEventListener('click', function () {
+            var passwordInput = document.getElementById('sign_up_password');
+            var passwordIcon = document.getElementById('showPasswordIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordIcon.src = './passwordinvisible.png';
+            } else {
+                passwordInput.type = 'password';
+                passwordIcon.src = './passwordvisible.png';
+            }
+        });
+    </script>
+
+</body>
+</html>
